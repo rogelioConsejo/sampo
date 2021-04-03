@@ -1,0 +1,2 @@
+# sampo
+Personal finance tool

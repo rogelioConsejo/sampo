@@ -1,11 +1,11 @@
 package inventory
 
 import (
-	"math/rand"
+	"errors"
 	"testing"
 )
 
-func TestInventory(t *testing.T) {
+func TestInventory_TrackSeveralItems(t *testing.T) {
 	t.Parallel()
 	var testInventory Inventory = New()
 	var testItems []Item = []Item{
@@ -13,51 +13,78 @@ func TestInventory(t *testing.T) {
 		makeTestItem("test-item2"),
 		makeTestItem("test-item3"),
 	}
-
 	var sums [3]Amount
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 10)
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 20)
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 30)
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 10.1)
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 1)
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 11.2)
-	testAddingAmount(t, testInventory, testItems[0], &sums[0], 0.01)
 
-	testAddingAmount(t, testInventory, testItems[1], &sums[1], 10)
-	testAddingAmount(t, testInventory, testItems[1], &sums[1], 10)
-	testAddingAmount(t, testInventory, testItems[1], &sums[1], 10)
-
-	testAddingAmount(t, testInventory, testItems[2], &sums[2], .01)
-	testAddingAmount(t, testInventory, testItems[2], &sums[2], .1)
-	testAddingAmount(t, testInventory, testItems[2], &sums[2], 1)
+	addAndRemoveFromSeveralItemsStocks(t, testInventory, testItems, sums)
 }
 
-func TestInventory_AddStock_ThrowsErrorOnNegativeAmount(t *testing.T) {
-	t.Parallel()
+func TestInventory_RemoveStock_ThrowsErrorOnRemovingTooMuchStock(t *testing.T) {
 	var testInventory Inventory = New()
-	testItem := makeTestItem("test-item")
+	testItem := Item{}
+	removeStockFromNonExistingItem(t, testInventory, testItem)
+	removeTooMuchStockFromExistingItem(t, testInventory, testItem)
+}
 
-	err := testInventory.AddStock(testItem, Amount(-1000*rand.Float64()-1))
-	_ = testInventory.GetStock(testItem)
-	if isEmpty(err) {
-		t.Fatal("error not thrown on negative amount")
+func removeTooMuchStockFromExistingItem(t *testing.T, testInventory Inventory, testItem Item) {
+	testInventory.AddStock(testItem, 100)
+	err := testInventory.RemoveStock(testItem, 101)
+	if err == nil {
+		t.Fatalf("error not thrown on removing too much stock")
 	}
-	if err != negativeAmountError {
-		t.Fatalf("invalid error, got %s, expected %s\n", err.Error(), negativeAmountError)
+	if !errors.Is(err, insufficientAmountError) {
+		t.Fatalf("invalid error thrown: %s", err.Error())
 	}
+}
+
+func removeStockFromNonExistingItem(t *testing.T, testInventory Inventory, testItem Item) {
+	err := testInventory.RemoveStock(testItem, 100)
+	if err == nil {
+		t.Fatalf("error not thrown on removing too much stock")
+	}
+	if !errors.Is(err, insufficientAmountError) {
+		t.Fatalf("invalid error thrown: %s", err.Error())
+	}
+}
+
+func addAndRemoveFromSeveralItemsStocks(t *testing.T, testInventory Inventory, testItems []Item, sums [3]Amount) {
+	testAddingAmount(t, testInventory, testItems[0], &sums[0], 1)
+	testAddingAmount(t, testInventory, testItems[0], &sums[0], 1)
+	testAddingAmount(t, testInventory, testItems[0], &sums[0], 1)
+
+	testAddingAmount(t, testInventory, testItems[1], &sums[1], 10)
+	testAddingAmount(t, testInventory, testItems[1], &sums[1], 10)
+	testAddingAmount(t, testInventory, testItems[1], &sums[1], 10)
+
+	testAddingAmount(t, testInventory, testItems[2], &sums[2], 1)
+	testAddingAmount(t, testInventory, testItems[2], &sums[2], 10)
+	testAddingAmount(t, testInventory, testItems[2], &sums[2], 100)
+
+	testRemovingAmount(t, testInventory, testItems[1], &sums[1], 10)
+	testRemovingAmount(t, testInventory, testItems[1], &sums[1], 10)
+	testRemovingAmount(t, testInventory, testItems[1], &sums[1], 10)
+
+	testRemovingAmount(t, testInventory, testItems[0], &sums[0], 1)
+	testRemovingAmount(t, testInventory, testItems[0], &sums[0], 1)
+	testRemovingAmount(t, testInventory, testItems[0], &sums[0], 1)
 }
 
 func testAddingAmount(t *testing.T, testInventory Inventory, testItem Item, sum *Amount, amountToAdd Amount) {
-	err := testInventory.AddStock(testItem, amountToAdd)
-	if isNotEmpty(err) {
-		t.Fatalf("error adding stock: %s", err.Error())
-	}
-	expectedAmount := *sum + amountToAdd
+	testInventory.AddStock(testItem, amountToAdd)
+	*sum = *sum + amountToAdd
 	retrievedAmount := testInventory.GetStock(testItem)
-	if retrievedAmount != expectedAmount {
-		t.Fatalf("invalid amount, expected %f, retrieved %f\n", *sum, retrievedAmount)
+	if *sum != retrievedAmount {
+		t.Fatalf("invalid amount, expected %d, retrieved %d\n", *sum, retrievedAmount)
 	}
-	*sum = expectedAmount
+	return
+}
+
+func testRemovingAmount(t *testing.T, testInventory Inventory, testItem Item, sum *Amount, amountToRemove Amount) {
+	testInventory.RemoveStock(testItem, amountToRemove)
+	*sum = *sum - amountToRemove
+	retrievedAmount := testInventory.GetStock(testItem)
+	if *sum != retrievedAmount {
+		t.Fatalf("invalid amount, expected %d, retrieved %d\n", *sum, retrievedAmount)
+	}
 	return
 }
 
@@ -66,11 +93,4 @@ func makeTestItem(name ItemName) Item {
 		name,
 	}
 	return testItem
-}
-
-func isEmpty(err error) bool {
-	return err == nil
-}
-func isNotEmpty(err error) bool {
-	return err != nil
 }

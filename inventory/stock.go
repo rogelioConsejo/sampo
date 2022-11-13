@@ -1,7 +1,7 @@
 package inventory
 
 type Stock struct {
-	Amount
+	Amount `json:"amount"`
 }
 
-type Amount float64
+type Amount uint

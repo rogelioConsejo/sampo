@@ -1,6 +1,9 @@
 package inventory
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 func New() Inventory {
 	return &inventory{
@@ -9,26 +12,34 @@ func New() Inventory {
 }
 
 type Inventory interface {
-	AddStock(Item, Amount) error
+	AddStock(Item, Amount)
 	GetStock(Item) Amount
+	RemoveStock(item Item, amount Amount) error
 }
 
 type inventory struct {
 	stock map[Item]Stock
 }
 
-func (i *inventory) GetStock(item Item) Amount {
-	return i.stock[item].Amount
-}
-
-func (i *inventory) AddStock(item Item, a Amount) error {
-	if a < 0 {
-		return negativeAmountError
+func (i *inventory) RemoveStock(item Item, a Amount) error {
+	itemStockAmount := i.stock[item].Amount
+	if a > itemStockAmount {
+		return fmt.Errorf("tried to remove %d from stock, only have %d: %w", a, itemStockAmount, insufficientAmountError)
 	}
 	i.stock[item] = Stock{
-		Amount: i.stock[item].Amount + a,
+		Amount: itemStockAmount - a,
 	}
 	return nil
 }
 
-var negativeAmountError = errors.New("cannot add a negative amount to a stock")
+func (i *inventory) GetStock(item Item) Amount {
+	return i.stock[item].Amount
+}
+
+func (i *inventory) AddStock(item Item, a Amount) {
+	i.stock[item] = Stock{
+		Amount: i.stock[item].Amount + a,
+	}
+}
+
+var insufficientAmountError = errors.New("insufficient amount, cannot remove")

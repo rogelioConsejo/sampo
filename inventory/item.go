@@ -1,7 +1,7 @@
 package inventory
 
 type Item struct {
-	ItemName
+	ItemName `json:"name"`
 }
 
 type ItemName string

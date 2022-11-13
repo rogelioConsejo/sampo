@@ -10,7 +10,7 @@ import (
 func TestTagger(t *testing.T) {
 	setupTest(t)
 	var testTagger Tagger = New()
-	id := getIdFromTagger(testTagger)
+	id := getIdFromTagger(testTagger.(tagger))
 	validateIdAsUUID(t, id)
 	err := testTagger.MakeQR(testQRFileLocation)
 	checkIfQRWasCorrectlyCreated(t, err)
@@ -43,8 +43,8 @@ func checkIfLengthIsNotValid(id item.Id) (int, bool) {
 	return tagLength, tagLengthIsNotValid
 }
 
-func getIdFromTagger(tagger Tagger) item.Id {
-	tag := tagger.Tag()
+func getIdFromTagger(tagger tagger) item.Id {
+	tag := tagger.getTag()
 	id := tag.Item().Id
 	return id
 }

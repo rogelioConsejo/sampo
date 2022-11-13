@@ -1,9 +1,10 @@
 # sampo
 
-## PMV Definition
-- [x] A business has projects, processes, objectives, and clients
-- [x] Projects have processes, objectives, key results, and clients 
-- [x] Processes have start and end dates, and clients
-- [x] Objectives have a name and a description
-- [ ] Clients have a name and contact information
-- [ ] Key results have a metric, initial status, measurement logs
+## Inventory
+Track the existing `Stock` from any amount of items in an `Inventory`.
+
+Items are identified by an `Id` string.
+
+Amounts cannot be negative. You cannot have, add or remove a negative amount. Amounts are always int, only natural numbers can be used.
+
+For smaller amounts (that are smaller than one unit), use smaller units (if you need to measure 1/2 a cm don't use the cm as a unit, in this case use mm, for example). 

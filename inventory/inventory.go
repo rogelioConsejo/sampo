@@ -21,13 +21,14 @@ type inventory struct {
 	stock map[Item]Stock
 }
 
-func (i *inventory) RemoveStock(item Item, a Amount) error {
+func (i *inventory) RemoveStock(item Item, amount Amount) error {
 	itemStockAmount := i.stock[item].Amount
-	if a > itemStockAmount {
-		return fmt.Errorf("tried to remove %d from stock, only have %d: %w", a, itemStockAmount, insufficientAmountError)
+	if amount > itemStockAmount {
+		return fmt.Errorf("%w: you tried to remove %d from stock, but you only have %d left",
+			insufficientAmountError, amount, itemStockAmount)
 	}
 	i.stock[item] = Stock{
-		Amount: itemStockAmount - a,
+		Amount: itemStockAmount - amount,
 	}
 	return nil
 }

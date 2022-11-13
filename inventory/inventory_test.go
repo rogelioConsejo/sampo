@@ -19,6 +19,7 @@ func TestInventory_TrackSeveralItems(t *testing.T) {
 }
 
 func TestInventory_RemoveStock_ThrowsErrorOnRemovingTooMuchStock(t *testing.T) {
+	t.Parallel()
 	var testInventory Inventory = New()
 	testItem := Item{}
 	removeStockFromNonExistingItem(t, testInventory, testItem)
@@ -79,7 +80,10 @@ func testAddingAmount(t *testing.T, testInventory Inventory, testItem Item, sum 
 }
 
 func testRemovingAmount(t *testing.T, testInventory Inventory, testItem Item, sum *Amount, amountToRemove Amount) {
-	testInventory.RemoveStock(testItem, amountToRemove)
+	err := testInventory.RemoveStock(testItem, amountToRemove)
+	if err != nil {
+		t.Fatalf("could not remove stock, error thrown: %s", err.Error())
+	}
 	*sum = *sum - amountToRemove
 	retrievedAmount := testInventory.GetStock(testItem)
 	if *sum != retrievedAmount {
@@ -88,9 +92,9 @@ func testRemovingAmount(t *testing.T, testInventory Inventory, testItem Item, su
 	return
 }
 
-func makeTestItem(name ItemName) Item {
+func makeTestItem(id Id) Item {
 	var testItem Item = Item{
-		name,
+		Id: id,
 	}
 	return testItem
 }

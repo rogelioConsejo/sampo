@@ -7,13 +7,13 @@ import (
 	"github.com/google/uuid"
 	"image/png"
 	"os"
-	"sampo/inventory"
-	"sampo/inventory/tag"
+	"sampo/asset/item"
+	"sampo/asset/item/tag"
 )
 
 func New() Tagger {
 	return tagger{
-		tag: tag.New(inventory.Item{Id: inventory.Id(uuid.NewString())}),
+		tag: tag.New(item.Item{Id: item.Id(uuid.NewString())}),
 	}
 }
 

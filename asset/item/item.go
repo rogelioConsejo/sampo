@@ -1,4 +1,4 @@
-package inventory
+package item
 
 type Item struct {
 	Id `json:"id"`

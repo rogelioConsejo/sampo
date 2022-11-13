@@ -1,11 +1,11 @@
 package tag
 
 import (
-	"sampo/inventory"
+	"sampo/asset/item"
 )
 
 // New creates a new tag from an inventory.Item
-func New(i inventory.Item) Tag {
+func New(i item.Item) Tag {
 	return Tag{
 		item:  i,
 		notes: map[NoteKey]NoteValue{},
@@ -14,13 +14,13 @@ func New(i inventory.Item) Tag {
 
 // Tag contains an inventory.Item and may contain a Price and Notes
 type Tag struct {
-	item  inventory.Item
+	item  item.Item
 	price Price
 	notes Notes
 }
 
 // Item is the item that the Tag is tracking
-func (t *Tag) Item() inventory.Item {
+func (t *Tag) Item() item.Item {
 	return t.item
 }
 

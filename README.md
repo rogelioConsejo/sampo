@@ -1,6 +1,15 @@
-# sampo
+# SAMPO
 
-## Tagger
+# Asset
+We have two types of asset: the `item` and the `sku`.
+
+The `item` is a unique non-fungible asset.
+
+The `sku` is a cataloged fungible asset.
+## Item
+### Tag
+A tag allows to append information to an item, like a Price or some extra information.
+#### Tagger
 Generates a `Tag` and an automatically generated `Id` and QR code for a specific, identified `Item`. 
 
 The QR code should be printed and added to the item to keep track of it without the need to add any other details
@@ -9,6 +18,7 @@ The QR code should be printed and added to the item to keep track of it without 
 Optionally, other details can be added to the tag. This should be used through some sort of configuration to allow you 
 to dynamically add extra fields to the tag and retrieve them as needed from the consumer component.
 
+## SKU
 ### Inventory
 Track the existing `Stock` from any amount of items in an `Inventory`.
 

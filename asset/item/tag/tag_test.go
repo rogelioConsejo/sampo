@@ -1,15 +1,15 @@
 package tag
 
 import (
-	"sampo/inventory"
+	"sampo/asset/item"
 	"testing"
 )
 
 func TestTag_Item(t *testing.T) {
-	var testItem = inventory.Item{Id: "1234"}
+	var testItem = item.Item{Id: "1234"}
 	var testTag Tag = New(testItem)
 
-	var tagItem inventory.Item = testTag.Item()
+	var tagItem item.Item = testTag.Item()
 
 	if testItem != tagItem {
 		t.Fatalf("invalid item, expected %+v, retrieve %+v", testItem, tagItem)
@@ -17,7 +17,7 @@ func TestTag_Item(t *testing.T) {
 }
 
 func TestTag_Price(t *testing.T) {
-	var testItem = inventory.Item{Id: "1234"}
+	var testItem = item.Item{Id: "1234"}
 	var testTag Tag = New(testItem)
 	var testPrice Price = 100 * Fraction
 
@@ -29,7 +29,7 @@ func TestTag_Price(t *testing.T) {
 }
 
 func TestTag_Notes(t *testing.T) {
-	var testItem = inventory.Item{Id: "1234"}
+	var testItem = item.Item{Id: "1234"}
 	var testTag Tag = New(testItem)
 	var noteKey NoteKey = "some-key"
 	var noteValue NoteValue = "some-value"

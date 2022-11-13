@@ -1,3 +1,4 @@
+// Package tag is a decorator used to add a price or any other annex information to an item.Item
 package tag
 
 import (

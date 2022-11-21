@@ -52,7 +52,7 @@ func getIdFromTagger(tagger tagger) item.Id {
 func setupTest(t *testing.T) {
 	t.Parallel()
 	t.Cleanup(func() {
-		_ = os.Remove(testQRFileLocation)
+		//_ = os.Remove(testQRFileLocation)
 	})
 }
 

@@ -1,4 +1,4 @@
-// Package tagger is used to create individual tags for non-fungible items
+// Package tagger is used to create individual QR tags for non-fungible items
 package tagger
 
 import (

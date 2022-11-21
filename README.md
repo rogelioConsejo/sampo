@@ -1,5 +1,4 @@
 # SAMPO
-
 # Asset
 We have two types of asset: the `item` and the `sku`.
 
@@ -30,3 +29,7 @@ numbers can be used.
 For smaller amounts (that are smaller than one unit), use smaller units (if you need to measure 1/2 a cm don't use the 
 cm as a unit, in this case use mm, for example).
 
+## Container
+A container contains items and SKUs. An instance of a container is separate from other instances of containers.
+
+A container can also contain other containers.
